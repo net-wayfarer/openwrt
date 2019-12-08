@@ -36,6 +36,7 @@
 			cooling-max-state = <10>;
 			#cooling-cells = <2>;
 			cpu-idle-states = <&CPU_SPC>;
+			
 		};
 
 		cpu1: cpu@1 {
@@ -608,6 +609,53 @@
 					qcom,switch-mode-frequency = <1200000>;
 				};
 			};
+			
+			/* Beginning of Kong's patches: https://www.desipro.de/openwrt/sources/qcom-ipq8064.dtsi*/
+			cfpb_clk: cfpb-clk {
+				reg = <QCOM_RPM_CFPB_CLK>;
+				qcom,rpm-clk-name = "cfpb";
+				qcom,rpm-clk-freq = <64000000>;
+				#clock-cells = <0>;
+				compatible = "qcom,rpm-clk";
+				qcom,rpm-clk-active-only;
+			};
+
+			mm_fabric_clk: mm-fabric-clk {
+				reg = <QCOM_RPM_MM_FABRIC_CLK>;
+				qcom,rpm-clk-name = "mm-fabric";
+				qcom,rpm-clk-freq = <220000000>;
+				#clock-cells = <0>;
+				compatible = "qcom,rpm-clk";
+				qcom,rpm-clk-active-only;
+			};
+			
+			mmfpb_clk: mmfpb-clk {
+					reg = <QCOM_RPM_MMFPB_CLK>;
+					qcom,rpm-clk-name = "mmfpb-fabric";
+					qcom,rpm-clk-freq = <83000000>;
+					#clock-cells = <0>;
+					compatible = "qcom,rpm-clk";
+					qcom,rpm-clk-active-only;
+			};
+
+			sys_fabric_clk: sys-fabric-clk {
+					reg = <QCOM_RPM_SYS_FABRIC_CLK>;
+					qcom,rpm-clk-name = "sys-fabric";
+					qcom,rpm-clk-freq = <160000000>;
+					#clock-cells = <0>;
+					compatible = "qcom,rpm-clk";
+					qcom,rpm-clk-active-only;
+			};
+
+			sfpb_clk: sfpb-clk {
+					reg = <QCOM_RPM_SFPB_CLK>;
+					qcom,rpm-clk-name = "sfpb";
+					qcom,rpm-clk-freq = <64000000>;
+					#clock-cells = <0>;
+					compatible = "qcom,rpm-clk";
+					qcom,rpm-clk-active-only;
+			};
+			/* End of Kong's patches: https://www.desipro.de/openwrt/sources/qcom-ipq8064.dtsi*/
 		};
 
 		rng@1a500000 {
@@ -860,7 +908,9 @@
 			compatible = "qcom,ipq806x-ahci", "generic-ahci";
 			reg = <0x29000000 0x180>;
 
+			/* Kong's build omits this line: https://www.desipro.de/openwrt/sources/qcom-ipq8064.dtsi
 			ports-implemented = <0x1>;
+			*/
 
 			interrupts = <0 209 0x0>;
 
@@ -974,7 +1024,7 @@
 
 			status = "disabled";
 
-			dwc3_0: dwc3@11000000 {
+			dwc3_0: dwc3@11000000 { /* Labelled as dwc3@11000000 in Kong's build */
 				compatible = "snps,dwc3";
 				reg = <0x11000000 0xcd00>;
 				interrupts = <0 110 0x4>;
@@ -999,7 +1049,7 @@
 
 			status = "disabled";
 
-			dwc3_1: dwc3@10000000 {
+			dwc3_1: dwc3@10000000 { /* Labelled as dwc3@10000000 in Kong's build */
 				compatible = "snps,dwc3";
 				reg = <0x10000000 0xcd00>;
 				interrupts = <0 205 0x4>;
