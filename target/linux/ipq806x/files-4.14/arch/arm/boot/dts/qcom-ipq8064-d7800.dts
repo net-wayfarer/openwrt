@@ -6,8 +6,10 @@
 	model = "Netgear Nighthawk X4 D7800";
 	compatible = "netgear,d7800", "qcom,ipq8064";
 
+	/* dissent1's unmerged patch: https://github.com/dissent1/r7800/commit/ba8785a1789240c31a3570bcd71133a46c6fff77 */
+	/* Fixes 512MB RAM memory issue that is not fully visible with production D7800 */
 	memory@0 {
-		reg = <0x42000000 0xe000000>;
+		reg = <0x42000000 0x1e000000>; /* Originally: reg = <0x42000000 0xe000000>; */
 		device_type = "memory";
 	};
 
@@ -18,6 +20,10 @@
 		rsvd@41200000 {
 			reg = <0x41200000 0x300000>;
 			no-map;
+		};
+		rsvd@5fe00000 {
+			reg = <0x5fe00000 0x200000>;
+			reusable;
 		};
 	};
 
@@ -185,18 +191,29 @@
 
 		pcie0: pci@1b500000 {
 			status = "ok";
-			reset-gpio = <&qcom_pinmux 3 GPIO_ACTIVE_HIGH>;
+		/*	reset-gpio = <&qcom_pinmux 3 GPIO_ACTIVE_HIGH>;
 			pinctrl-0 = <&pcie0_pins>;
 			pinctrl-names = "default";
+		*/
+			phy-tx0-term-offset = <7>;
 		};
 
 		pcie1: pci@1b700000 {
 			status = "ok";
 			reset-gpio = <&qcom_pinmux 48 GPIO_ACTIVE_HIGH>;
-			pinctrl-0 = <&pcie1_pins>;
+		/*	pinctrl-0 = <&pcie1_pins>;
 			pinctrl-names = "default";
 			force_gen1 = <1>;
+		*/
+		/* dissent1's unmerged patch, https://github.com/dissent1/r7800/commit/ba8785a1789240c31a3570bcd71133a46c6fff77
+			phy-tx0-term-offset = <7>;
 		};
+		
+		pcie2: pci@1b900000 {
+			status = "ok";
+			phy-tx0-term-offset = <7>;
+		};
+		*/
 
 		/* Enable 3rd PCIe slot on D7800 where DSL modem is */
 		pcie2: pci@1b900000 {
